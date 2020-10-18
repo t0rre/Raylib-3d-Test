@@ -3,7 +3,7 @@
 #include <ctime>
 #include <math.h>
 Vector3 toVector3(float x, float y, float z);
-enum actions {
+enum class actions {
 	jump,
 	forward,
 	backward,
@@ -29,6 +29,7 @@ public:
 	int jumpFinish = 0;
 	bool wireFrame = false;
 	int playerAngle = 0;
+	bool updated = false;
 	
 
 	Vector3 toVector3(float x, float y, float z)

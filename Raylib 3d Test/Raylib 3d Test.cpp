@@ -6,7 +6,8 @@ void draw(), update();
 Camera3D camera = { 0 };
 Vector3 toVector3(float x, float y, float z);
 Vector3 playerPos = toVector3(0.0f, 0.0f, 0.0f);
-player player1 = player();
+player* players = new player{1};
+int currentPlayer = 0;
 bool cameraStatic = false;
 int main()
 {
@@ -16,8 +17,11 @@ int main()
     camera.up = toVector3(0.0f, 1.0f, 0.0f);
     camera.fovy = 45.0f;
     camera.type = CAMERA_PERSPECTIVE;
+    players[1].color = GREEN;
+    players[2].color = YELLOW;
+    players[3].color = PINK;
+    players[4].color = ORANGE;
     SetTargetFPS(60);
-
     while (!WindowShouldClose())
     {
         update();
@@ -26,31 +30,34 @@ int main()
 }
 void update()
 {
-    bool player1Updated = false;
+    for (int i = 0; i < 5; i++)
+    {
+        players[i].updated = false;
+    }
     //Key press code here
     if (IsKeyDown(KEY_LEFT))
     {
-        player1.cameraOffset.x -= 0.1f;
+        players[currentPlayer].cameraOffset.x -= 0.1f;
     }
     if (IsKeyDown(KEY_RIGHT))
     {
-        player1.cameraOffset.x += 0.1f;
+        players[currentPlayer].cameraOffset.x += 0.1f;
     }
     if (IsKeyDown(KEY_UP))
     {
-        player1.cameraOffset.z -= 0.1f;
+        players[currentPlayer].cameraOffset.z -= 0.1f;
     }
     if (IsKeyDown(KEY_DOWN))
     {
-        player1.cameraOffset.z += 0.1f;
+        players[currentPlayer].cameraOffset.z += 0.1f;
     }
     if (IsKeyDown(KEY_RIGHT_SHIFT))
     {
-        player1.cameraOffset.y += 0.1f;
+        players[currentPlayer].cameraOffset.y += 0.1f;
     }
     if (IsKeyDown(KEY_RIGHT_CONTROL))
     {
-        player1.cameraOffset.y -= 0.1f;
+        players[currentPlayer].cameraOffset.y -= 0.1f;
     }
     if (IsKeyPressed(KEY_H))
     {
@@ -58,7 +65,7 @@ void update()
     }
     if (IsKeyPressed(KEY_K))
     {
-        player1.wireFrame = !player1.wireFrame;
+        players[currentPlayer].wireFrame = !players[currentPlayer].wireFrame;
     }
     if (IsKeyPressed(KEY_F))
     {
@@ -67,43 +74,67 @@ void update()
     //player 1 controls
     if (IsKeyDown(KEY_W))
     {
-        player1.update(actions::forward);
-        player1Updated = true;
+        players[currentPlayer].update(actions::forward);
+        players[currentPlayer].updated = true;
     }
     if (IsKeyDown(KEY_S))
     {
-        player1.update(actions::backward);
-        player1Updated = true;
+        players[currentPlayer].update(actions::backward);
+        players[currentPlayer].updated = true;
     }
     if (IsKeyDown(KEY_D))
     {
-        player1.update(actions::right);
-        player1Updated = true;
+        players[currentPlayer].update(actions::right);
+        players[currentPlayer].updated = true;
     }
     if (IsKeyDown(KEY_A))
     {
-        player1.update(actions::left);
-        player1Updated = true;
+        players[currentPlayer].update(actions::left);
+        players[currentPlayer].updated = true;
     }
     if (IsKeyDown(KEY_SPACE))
     {
-        player1.update(actions::jump);
-        player1Updated = true;
+        players[currentPlayer].update(actions::jump);
+        players[currentPlayer].updated = true;
     }
-    if(!player1Updated)
+    for (int i = 0; i < 5; i++)
     {
-        player1.update(actions::none);
+        if (players[i].updated == false)
+        {
+            players[i].update(actions::none);
+        }
     }
     if (cameraStatic)
     {
-        camera.position = player1.cameraOffset;
+        camera.position = players[currentPlayer].cameraOffset;
     }
     else
     {
-        player1.updateCamera();
-        camera.position = player1.cameraPos;
+        players[currentPlayer].updateCamera();
+        camera.position = players[currentPlayer].cameraPos;
     }
-    camera.target = player1.pos;
+    camera.target = players[currentPlayer].pos;
+    //change current player
+    if (IsKeyPressed(KEY_KP_0))
+    {
+        currentPlayer = 0;
+    }
+    if (IsKeyPressed(KEY_KP_1))
+    {
+        currentPlayer = 1;
+    }
+    if (IsKeyPressed(KEY_KP_2))
+    {
+        currentPlayer = 2;
+    }
+    if (IsKeyPressed(KEY_KP_3))
+    {
+        currentPlayer = 3;
+    }
+    if (IsKeyPressed(KEY_KP_4))
+    {
+        currentPlayer = 4;
+    }
 }
 void draw()
 {
@@ -115,17 +146,16 @@ void draw()
     DrawCubeWires(toVector3(-5.0f, -5.0f, -5.0f), 10.0f, 10.0f, 10.0f, YELLOW);
     DrawGrid(20,1.0f);
     //Draw player;
-    player1.drawPlayer();
+    for (int i = 0; i < 5; i++)
+    {
+        players[i].drawPlayer();
+    }
     EndMode3D();
-    std::string message = "Jumpstart: " + std::to_string(player1.jumpStart)+"\nJumpfinish: " + std::to_string(player1.jumpFinish)+"\ndeltaY: "+ std::to_string(player1.delta.y)+"\nJumpY: "+std::to_string(player1.jumpY)+"\nX: "+std::to_string(player1.pos.x) + "\nY: " + std::to_string(player1.pos.y) + "\nZ: " + std::to_string(player1.pos.z)+"\nAngle: "+std::to_string(player1.playerAngle);
+    std::string message = "Jumpstart: " + std::to_string(players[currentPlayer].jumpStart)+"\nJumpfinish: " + std::to_string(players[currentPlayer].jumpFinish)+"\ndeltaY: "+ std::to_string(players[currentPlayer].delta.y)+"\nJumpY: "+std::to_string(players[currentPlayer].jumpY)+"\nX: "+std::to_string(players[currentPlayer].pos.x) + "\nY: " + std::to_string(players[currentPlayer].pos.y) + "\nZ: " + std::to_string(players[currentPlayer].pos.z)+"\nAngle: "+std::to_string(players[currentPlayer].playerAngle);
     DrawText(message.c_str(), 0, 0, 20, WHITE);
     EndDrawing();
 }
 Vector3 toVector3(float x, float y, float z)
 {
     return { x,y,z };
-}
-void calculateJump(player player)
-{
-
 }
