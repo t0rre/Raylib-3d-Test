@@ -1,4 +1,8 @@
 ﻿  Raylib 3d Test.cpp
-  player.cpp
-  Generating Code...
+C:\Users\Tor Smedberg\source\repos\Raylib 3d Test\Raylib 3d Test\player.h(54,34): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Tor Smedberg\source\repos\Raylib 3d Test\Raylib 3d Test\player.h(55,34): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Tor Smedberg\source\repos\Raylib 3d Test\Raylib 3d Test\player.h(83,1): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Tor Smedberg\source\repos\Raylib 3d Test\Raylib 3d Test\player.h(84,1): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Tor Smedberg\source\repos\Raylib 3d Test\Raylib 3d Test\player.h(87,1): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Tor Smedberg\source\repos\Raylib 3d Test\Raylib 3d Test\player.h(88,1): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
   Raylib 3d Test.vcxproj -> C:\Users\Tor Smedberg\source\repos\Raylib 3d Test\Debug\Raylib 3d Test.exe

@@ -6,12 +6,11 @@ void draw(), update();
 Camera3D camera = { 0 };
 Vector3 toVector3(float x, float y, float z);
 Vector3 playerPos = toVector3(0.0f, 0.0f, 0.0f);
-Vector3 cameraOffset = toVector3(0.0f, 10.0f, 10.0f);
 player player1 = player();
 bool cameraStatic = false;
 int main()
 {
-    InitWindow(1024, 768, "Raylib 3D Test");
+    InitWindow(540,480, "Raylib 3D Test");
     camera.position = toVector3(10.0f, 10.0f, 10.0f);
     camera.target = toVector3(0.0f, 0.0f, 0.0f);
     camera.up = toVector3(0.0f, 1.0f, 0.0f);
@@ -27,30 +26,31 @@ int main()
 }
 void update()
 {
+    bool player1Updated = false;
     //Key press code here
     if (IsKeyDown(KEY_LEFT))
     {
-        cameraOffset.x -= 0.1f;
+        player1.cameraOffset.x -= 0.1f;
     }
     if (IsKeyDown(KEY_RIGHT))
     {
-        cameraOffset.x += 0.1f;
+        player1.cameraOffset.x += 0.1f;
     }
     if (IsKeyDown(KEY_UP))
     {
-        cameraOffset.z -= 0.1f;
+        player1.cameraOffset.z -= 0.1f;
     }
     if (IsKeyDown(KEY_DOWN))
     {
-        cameraOffset.z += 0.1f;
+        player1.cameraOffset.z += 0.1f;
     }
     if (IsKeyDown(KEY_RIGHT_SHIFT))
     {
-        cameraOffset.y += 0.1f;
+        player1.cameraOffset.y += 0.1f;
     }
     if (IsKeyDown(KEY_RIGHT_CONTROL))
     {
-        cameraOffset.y -= 0.1f;
+        player1.cameraOffset.y -= 0.1f;
     }
     if (IsKeyPressed(KEY_H))
     {
@@ -60,14 +60,48 @@ void update()
     {
         player1.wireFrame = !player1.wireFrame;
     }
-    player1.update();
+    if (IsKeyPressed(KEY_F))
+    {
+        ToggleFullscreen();
+    }
+    //player 1 controls
+    if (IsKeyDown(KEY_W))
+    {
+        player1.update(actions::forward);
+        player1Updated = true;
+    }
+    if (IsKeyDown(KEY_S))
+    {
+        player1.update(actions::backward);
+        player1Updated = true;
+    }
+    if (IsKeyDown(KEY_D))
+    {
+        player1.update(actions::right);
+        player1Updated = true;
+    }
+    if (IsKeyDown(KEY_A))
+    {
+        player1.update(actions::left);
+        player1Updated = true;
+    }
+    if (IsKeyDown(KEY_SPACE))
+    {
+        player1.update(actions::jump);
+        player1Updated = true;
+    }
+    if(!player1Updated)
+    {
+        player1.update(actions::none);
+    }
     if (cameraStatic)
     {
-        camera.position = cameraOffset;
+        camera.position = player1.cameraOffset;
     }
     else
     {
-        camera.position = toVector3(player1.pos.x + cameraOffset.x, player1.pos.y + cameraOffset.y, player1.pos.z + cameraOffset.z);
+        player1.updateCamera();
+        camera.position = player1.cameraPos;
     }
     camera.target = player1.pos;
 }
@@ -83,7 +117,7 @@ void draw()
     //Draw player;
     player1.drawPlayer();
     EndMode3D();
-    std::string message = "Jumpstart: " + std::to_string(player1.jumpStart)+"\nJumpfinish: " + std::to_string(player1.jumpFinish)+"\ndeltaY: "+ std::to_string(player1.delta.y)+"\nJumpY: "+std::to_string(player1.jumpY)+"\nX: "+std::to_string(player1.pos.x) + "\nY: " + std::to_string(player1.pos.y) + "\nZ: " + std::to_string(player1.pos.z);
+    std::string message = "Jumpstart: " + std::to_string(player1.jumpStart)+"\nJumpfinish: " + std::to_string(player1.jumpFinish)+"\ndeltaY: "+ std::to_string(player1.delta.y)+"\nJumpY: "+std::to_string(player1.jumpY)+"\nX: "+std::to_string(player1.pos.x) + "\nY: " + std::to_string(player1.pos.y) + "\nZ: " + std::to_string(player1.pos.z)+"\nAngle: "+std::to_string(player1.playerAngle);
     DrawText(message.c_str(), 0, 0, 20, WHITE);
     EndDrawing();
 }
